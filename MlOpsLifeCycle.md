@@ -1,5 +1,8 @@
-- Machine Learning Life cycle is a process of developing and deploying machine learning models in production.
+ # Machine Learning Life cycle 
 
+    It is a process of developing and deploying machine learning models in production.
+--- 
+# Stages Involved in ML Life Cycle
     - Problem Definition
     - Data Collection -- Take from the publicly available datasets like Kaggle, UCI, etc. or incase it is internal then data scientis gather the data.
     - Data Preprocessing -- Clean the data, handle missing values, outliers, etc.
