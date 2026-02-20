@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 app = Flask(__name__)
-MODEL_PATH = Path("artifacts/model.pkl")
+MODEL_PATH = Path("../artifacts/model.pkl")
 
 if not MODEL_PATH.exists():
     # convenience: train if model missing
