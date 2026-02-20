@@ -28,7 +28,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install -r basicModelrequirements.txt
+          pip install -r basicModel/requirements.txt
       
       - name: Train and save the model
         run: |
