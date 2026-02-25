@@ -1,4 +1,0 @@
-[core]
-    remote = remote_name
-['remote "remote_name"']
-    url = s3://mlops-firoz-demo/dvc
