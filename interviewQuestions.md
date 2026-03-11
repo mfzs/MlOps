@@ -1,4 +1,7 @@
 # Interview Questions 
+<details>
+<summary><b>Sample</b></summary>
+</details>
 
 <details>
 <summary><b>What is MLOps</b></summary>
@@ -14,3 +17,10 @@ def deploy_model():
 
 </details>
 
+<details>
+<summary><b>What is MLflow</b></summary>
+</details>
+
+<details>
+<summary><b>What is Kserve</b></summary>
+</details>
