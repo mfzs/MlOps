@@ -1,0 +1,73 @@
+name: Deploy Model to Kubernets using Helm
+
+on:
+  workflow_dispatch:
+    inputs:
+      cloud:
+        type: choice
+        description: "Choose the Cloud"
+        options:
+          - EKS
+          - GKE
+          - AKS
+      environment:
+        type: choice
+        description: "Choose the environment"
+        options:
+          - dev
+          - staging
+          - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: choose the cloud
+        run: echo "${{ github.event.inputs.cloud }}"
+      
+      - name: choose the environment
+        run: echo "${{ github.event.inputs.environment }}"
+      
+      - name: Set Up Creds for "${{ github.event.inputs.cloud }}"
+        run: |
+          if [ "${{ github.event.inputs.cloud }}" == "EKS" ]; then
+            aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws_region=${{ secrets.AWS_REGION }}
+            aws configure set aws_access_key_id $aws_access_key_id
+            aws configure set aws_secret_access_key $aws_secret_access_key
+            aws configure set aws_region $aws_region
+            aws eks update-kubeconfig --name mlops-cluster --region $aws_region
+
+          elif [ "${{ github.event.inputs.cloud }}" == "GKE" ]; then
+            gcloud_project=${{ secrets.GCLOUD_PROJECT }}
+            gcloud_region=${{ secrets.GCLOUD_REGION }}
+            gcloud auth activate-service-account --key-file=service-account.json
+            gcloud container clusters get-credentials mlops-cluster --region $gcloud_region --project $gcloud_project
+
+          elif [ "${{ github.event.inputs.cloud }}" == "AKS" ]; then
+            az_client_id=${{ secrets.AZ_CLIENT_ID }}
+            az_client_secret=${{ secrets.AZ_CLIENT_SECRET }}
+            az_tenant_id=${{ secrets.AZ_TENANT_ID }}
+            az_subscription_id=${{ secrets.AZ_SUBSCRIPTION_ID }}
+            az login --service-principal -u $az_client_id -p $az_client_secret --tenant $az_tenant_id
+            az account set --subscription $az_subscription_id
+            az aks get-credentials --resource-group my-resource-group --name mlops-cluster
+          fi
+      
+      - name: Install istio mesh to the cluster using helm
+        run: |
+          echo "To-Do: Install istio"
+      
+      - name: Build and Push the Model to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PAT }}" | docker login -u mfzs --password-stdin
+          docker build -t mfzs/mlops:${{ github.event.inputs.cloud }}-${{ github.sha }} -f 4-Model-Deployment/2-K8s/Dockerfile 4-Model-Deployment/2-K8s/
+          docker push mfzs/mlops:${{ github.event.inputs.cloud }}-${{ github.sha }}
+      
+      - name: Install the model using helm
+        run: |
+          echo "To-Do: Install model"

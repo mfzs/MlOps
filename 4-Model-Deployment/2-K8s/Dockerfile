@@ -1,0 +1,26 @@
+FROM --platform=linux/amd64 python:3.12-slim
+
+# prevent writing .pyc file  
+ENV PYTHONDONTWRITEBYTECODE=1 
+
+# Enable stdout/stderr flushing
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends gcc libc-dev \
+ && pip install --no-cache-dir -r requirements.txt \
+ && apt-get remove -y gcc libc-dev \
+ && apt-get autoremove -y \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY . .
+
+RUN python3 model/train.py
+
+EXPOSE 6000
+
+CMD ["gunicorn","--workers", "4" , "-b", "0.0.0.0:6000", "app:app"]
