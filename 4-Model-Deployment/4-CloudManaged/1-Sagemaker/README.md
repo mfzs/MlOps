@@ -57,3 +57,13 @@
     - 
 - Create App (Studio/RStudio/Jupyter Notebook)
 - 
+
+## Model registry with Sagemaker
+- S3 Bucket
+- Roles with trust and Policy
+- Domain
+- User Profile
+- Jupyterlab
+- Model Creation
+- Push the model to registry
+
